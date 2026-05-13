@@ -8,7 +8,7 @@ export class AppService {
   constructor (private configService: ConfigService){}
 
   getHello(): string {
-    const appName = this.configService.get<string>('APP_NAME', 'defaultvalue')
+    const appName = this.configService.get<string>('appName')
     console.log(appName, 'appName')
     return `Hello ${appName}`
   }
