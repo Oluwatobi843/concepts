@@ -55,6 +55,17 @@ export class PostsService {
     return this.posts[currentPostIndexToEdit]
    }
 
+   remove(id: number) : { message : string}{
+      const currentPostIndexToDelete = this.posts.findIndex(post=> post.id === id);
+      if(currentPostIndexToDelete === -1){
+        throw new NotFoundException(`Post with ID ${id} is not found `);
+      }
+
+      this.posts.splice(currentPostIndexToDelete, 1)
+
+      return { message: `Post with ID ${id} has been deleted`}
+   }
+
    private getNextId(): number{
     return this.posts.length > 0 ? 
     Math.max(...this.posts.map(post=> post.id)) + 1 : 1
