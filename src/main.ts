@@ -9,6 +9,7 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // validating incoming requests bodies automatically
   app.useGlobalPipes(
 
     new ValidationPipe({
