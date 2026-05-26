@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, Post } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { HelloModule } from './hello/hello.module';
@@ -19,13 +19,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
     TypeOrmModule.forRoot({
 
-        type : 'postgress',
+        type : 'postgres',
         host : 'localhost',
         port : 5432,
         username : 'postgress',
         password : 'root',
         database : 'youtube-nestjs-project',
-        
+        entities : [Post], // array of entities that you want to register
+        synchronize : true, // dev mode
+
     }),
     
     // ConfigModule.forRoot({
