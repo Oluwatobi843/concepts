@@ -22,7 +22,7 @@ export class PostsController {
   ): Promise<PostEntity> {
     return this.postsService.findOne(id);
   }
-
+ 
   // Create Post
   @Post()
   @HttpCode(HttpStatus.CREATED)
