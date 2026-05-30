@@ -6,20 +6,20 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 @Entity()
 export class Post {
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column({length: 50})
-    title: string;
+    title!: string;
 
     @Column({ type: 'text'})
-    content : string;
+    content! : string;
 
     @Column()
-    authorName: string;
+    authorName!: string;
     
     @CreateDateColumn()
-    createdDate: Date;
+    createdDate!: Date;
 
     @UpdateDateColumn()
-    updatedDate: Date;
+    updatedDate!: Date;
 } 

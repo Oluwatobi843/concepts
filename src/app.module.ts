@@ -6,7 +6,6 @@ import { HelloModule } from './hello/hello.module';
 import { UserModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { PostsModule } from './posts/posts.module';
-import * as joi from 'joi';
 import appConfig from './config/app.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
