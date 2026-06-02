@@ -8,6 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import { PostsModule } from './posts/posts.module';
 import appConfig from './config/app.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from './auth/auth.module';
 
 // root module -> use all the sub modules
 
@@ -37,6 +38,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     HelloModule,
     UserModule,
     PostsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
