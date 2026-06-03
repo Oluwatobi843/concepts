@@ -13,7 +13,7 @@ export class AuthService {
 
   constructor(
     @InjectRepository(User)
-    private userRepository : Repository<User>
+    private userRepository : Repository<User>,
     private jwtService : JwtService
   ){}
 
@@ -116,9 +116,24 @@ export class AuthService {
       sub: user.id,
       role: user.role
     }
+    return this.jwtService.sign(payload, {
+      secret: 'jwt_secret',
+      expiresIn: '15m'
+    })
   }
 
-  private generateAccessToken(user: User) : string {
+  private generateRefreshToken(user: User) : string {
+
+     const payload = {
+      
+       sub: user.id,
+       
+     };
+
+     return this.jwtService.sign(payload, {
+       secret: 'refresh_secret',
+       expiresIn: '7d',
+     });
 
   }
 }
