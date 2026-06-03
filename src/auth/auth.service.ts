@@ -1,10 +1,11 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User, UserRole } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { RegisterDto } from './dto/register.dto';
 import * as bcrypt from 'bcrypt';
 import { LoginDto } from './dto/login.dto';
+import { JwtService } from '@nestjs/jwt';
 
 
 @Injectable()
@@ -13,6 +14,7 @@ export class AuthService {
   constructor(
     @InjectRepository(User)
     private userRepository : Repository<User>
+    private jwtService : JwtService
   ){}
 
   async register (registerDto : RegisterDto){
@@ -74,13 +76,49 @@ export class AuthService {
             };
   }
 
-  async login (registerDto : RegisterDto){
+  async login (loginDto : LoginDto){
     const user =  await this.userRepository.findOne({
       where : {email : LoginDto.email }
     })
+
+    if(!user || !(await this.verifyPassword(loginDto.password, user.password))){
+      throw new UnauthorizedException('Invalid credentials or account not exists')
+    }
+
+    // generate the tokens
+    const tokens = this.generateTokens(user)
+    const {password, ...result} = user;
+    return {
+      user: result,
+      ...tokens
+    }
   }
 
   private async hashPassword(password: string): Promise<string>{
     return bcrypt.hash(password, 10)
+  }
+
+  private async verifyPassword(plainPassword : string, hashedPassword: string) : Promise<boolean>{
+    return bcrypt.compare(plainPassword, hashedPassword)
+  }
+
+  private generateTokens(user: User){
+    return{
+      accessToken : this.generateAccessToken(user),
+      refreshToken : this.generateRefreshToken(user)
+    }
+  }
+
+  private generateAccessToken(user: User) : string {
+    //  -> email, sub (id), role -> vvvI -> RBAC -> user ? Admin
+    const payload = {
+      email: user.email,
+      sub: user.id,
+      role: user.role
+    }
+  }
+
+  private generateAccessToken(user: User) : string {
+
   }
 }
