@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { Post } from './posts/entities/post.entity'
+import { Post } from './posts/entities/post.entity';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { HelloModule } from './hello/hello.module';
@@ -9,7 +9,7 @@ import { PostsModule } from './posts/posts.module';
 import appConfig from './config/app.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
-import { User } from './auth/enitities/user.entity';
+import { User } from './auth/entities/user.entity';
 
 // root module -> use all the sub modules
 
@@ -33,7 +33,7 @@ import { User } from './auth/enitities/user.entity';
 
       // })
 
-      load : [appConfig],
+      load: [appConfig],
     }),
 
     HelloModule,
