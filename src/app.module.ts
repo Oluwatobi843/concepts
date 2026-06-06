@@ -12,12 +12,20 @@ import { AuthModule } from './auth/auth.module';
 import { User } from './auth/entities/user.entity';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { CacheModule } from '@nestjs/cache-manager';
+import { FileUploadModule } from './file-upload/file-upload.module';
 
 
 // root module -> use all the sub modules
 
 @Module({
+
+  
+
   imports: [
+
+    ConfigModule.forRoot({
+      isGlobal: true
+    }),
 
     ThrottlerModule.forRoot([
       {
@@ -57,6 +65,7 @@ import { CacheModule } from '@nestjs/cache-manager';
     UserModule,
     PostsModule,
     AuthModule,
+    FileUploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],

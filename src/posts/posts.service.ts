@@ -46,7 +46,7 @@ private generatePostsListCacheKey(query: FindPostsQueryDto) : string {
     const {page = 1, limit = 10, title  } = query
     const skip  = (page  - 1) * limit
 
-    const queryBuilder  = this.postsRepository.createQueryBuilder('post').leftJoinAndSelect('post.authorName', 'authorName').orderBy('post.createdAt', 'DESC').skip(skip).take(limit)
+    const queryBuilder  = this.postsRepository.createQueryBuilder('post').leftJoinAndSelect('post.authorName', 'authorName').orderBy('post.createdDate', 'DESC').skip(skip).take(limit)
 
     if(title){
       queryBuilder.andWhere('post.title ILIKE : title', {title: `%${title}%`})
@@ -72,6 +72,18 @@ private generatePostsListCacheKey(query: FindPostsQueryDto) : string {
   }
 
   async findOne(id: number): Promise<Post>{
+
+    const cacheKey = `post_${id}`
+    const cachedPost = await this.cacheManager.get<Post>(cacheKey)
+
+    if(cachedPost){
+      console.log(`Cache Hit ---------> Returning post from cache ${cacheKey}`);
+
+      return cachedPost
+    }
+
+    console.log(`Cache Miss ---- -----> Returning post from DB`)
+
       const singlePost = await this.postsRepository.findOne({
         where : {id},
         relations : ['authorName']
@@ -81,6 +93,10 @@ private generatePostsListCacheKey(query: FindPostsQueryDto) : string {
         throw new NotFoundException(`Post with ID ${id} is not found`)
       }
 
+
+      // store the post to cache
+
+      await this.cacheManager.set(cacheKey, singlePost, 30000)
       return singlePost
    }
 
@@ -91,7 +107,7 @@ private generatePostsListCacheKey(query: FindPostsQueryDto) : string {
             authorName
         })
 
-        
+        await this.invalidateAllExistingListCaches()
         return this.postsRepository.save(newlyCreatedPost)
    }
 
@@ -112,7 +128,11 @@ private generatePostsListCacheKey(query: FindPostsQueryDto) : string {
              findPostToUpdate.content = updatePostData.content;
            }
 
-          
+          const updatedPost = await this.postsRepository.save(findPostToUpdate);
+
+          await this.cacheManager.del(`post_${id}`)
+
+          await this.invalidateAllExistingListCaches()
 
              return this.postsRepository.save(findPostToUpdate);
    }
@@ -121,5 +141,18 @@ private generatePostsListCacheKey(query: FindPostsQueryDto) : string {
       const findPostToDelete = await this.findOne(id)
 
       await this.postsRepository.remove(findPostToDelete)
+
+      await this.cacheManager.del(`post_${id}`)
+
+      await this.invalidateAllExistingListCaches();
+   }
+
+   private async invalidateAllExistingListCaches(): Promise<void>{
+      console.log(`Invalidating ${this.postListCachekeys.size} list cache entries`);
+
+      for(const key of this.postListCachekeys){
+        await this.cacheManager.del(key)
+      }
+      this.postListCachekeys.clear();
    }
 }
