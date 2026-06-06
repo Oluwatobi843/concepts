@@ -9,6 +9,8 @@ import { currentUser } from 'src/auth/decorators/current-user.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorators';
 import { UserRole } from 'src/auth/entities/user.entity';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { FindPostsQueryDto } from './dto/find-posts-query.dto';
+import { PaginatedResponse } from 'src/common/interfaces/paginated-response.interface';
 
 @Controller('posts')
 export class PostsController {
@@ -16,8 +18,10 @@ export class PostsController {
 
   // Get all Data
   @Get()
-  async findAll(): Promise<PostEntity[]> {
-    return this.postsService.findAll();
+  async findAll(
+    @Query() query : FindPostsQueryDto
+  ): Promise<PaginatedResponse<PostEntity>> {
+    return this.postsService.findAll(query);
   }
 
   // Get a single Data
