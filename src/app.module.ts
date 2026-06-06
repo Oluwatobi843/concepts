@@ -11,6 +11,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { User } from './auth/entities/user.entity';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { CacheModule } from '@nestjs/cache-manager';
+
 
 // root module -> use all the sub modules
 
@@ -23,6 +25,12 @@ import { ThrottlerModule } from '@nestjs/throttler';
         limit: 5
       }
     ]),
+
+    CacheModule.register({
+      isGlobal: true,
+      ttl: 30000,
+      max: 100
+    }),
 
     TypeOrmModule.forRoot({
       type: 'postgres',
