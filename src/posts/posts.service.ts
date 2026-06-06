@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
 import { Repository } from 'typeorm';
@@ -50,7 +50,9 @@ export class PostsService {
 
           const findPostToUpdate = await this.findOne(id)
 
-          if(findPostToUpdate.authorName.id !== user.id && user.role !== UserRole.ADMIN)
+          if(findPostToUpdate.authorName.id !== user.id && user.role !== UserRole.ADMIN){
+            throw new ForbiddenException('You are not authorize to update this post')
+          }
 
           if(updatePostData.title){
             findPostToUpdate.title = updatePostData.title

@@ -10,11 +10,20 @@ import appConfig from './config/app.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { User } from './auth/entities/user.entity';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 // root module -> use all the sub modules
 
 @Module({
   imports: [
+
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 5
+      }
+    ]),
+
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
