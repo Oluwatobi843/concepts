@@ -3,21 +3,21 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { User } from 'src/auth/entities/user.entity';
-import { File } from './entities/file.entity';
-import { NotFoundError } from 'rxjs';
+import { UploadFile } from './entities/file.entity';
+
 
 @Injectable()
 export class FileUploadService {
   constructor(
-    @InjectRepository(File)
-    private readonly fileRepository: Repository<File>,
+    @InjectRepository(UploadFile)
+    private readonly fileRepository: Repository<UploadFile>,
     private readonly cloudinaryservice : CloudinaryService  
   ) {}
 
-  async uploadFile(file: Express.Multer.File, description : string | undefined, user : User) : Promise<File>{
+  async uploadFile(file: Express.Multer.File, description : string | undefined, user : User) : Promise<UploadFile>{
     const cloudinaryResponse = await this.cloudinaryservice.uploadFile(file);
 
-    const newlyCreatedFile = this.fileRepository.create({
+    const newlyCreatedUploadFile = this.fileRepository.create({
       originalName : file.originalname,
       mimeType: file.mimetype,
       size : file.size,
@@ -28,10 +28,10 @@ export class FileUploadService {
 
     })
 
-    return this.fileRepository.save(newlyCreatedFile)
+    return this.fileRepository.save(newlyCreatedUploadFile)
   }
 
-  async findAll() : Promise<File[]>{
+  async findAll() : Promise<UploadFile[]>{
     return this.fileRepository.find({
       relations : ['uploader'],
       order: { createdAt : 'DESC'}

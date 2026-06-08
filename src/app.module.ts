@@ -13,8 +13,9 @@ import { User } from './auth/entities/user.entity';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { CacheModule } from '@nestjs/cache-manager';
 import { FileUploadModule } from './file-upload/file-upload.module';
-import { File } from './file-upload/entities/file.entity';
-
+import { UploadFile } from './file-upload/entities/file.entity';
+import { EventsModule } from './events/events.module';
+ 
 
 // root module -> use all the sub modules
 
@@ -23,10 +24,6 @@ import { File } from './file-upload/entities/file.entity';
   
 
   imports: [
-
-    ConfigModule.forRoot({
-      isGlobal: true
-    }),
 
     ThrottlerModule.forRoot([
       {
@@ -48,7 +45,7 @@ import { File } from './file-upload/entities/file.entity';
       username: 'postgres',
       password: 'root',
       database: 'youtube-nestjs-project',
-      entities: [Post, User, File], // array of entities that you want to register
+      entities: [Post, User, UploadFile], // array of entities that you want to register
       synchronize: true, // dev mode
     }),
 
@@ -67,6 +64,7 @@ import { File } from './file-upload/entities/file.entity';
     PostsModule,
     AuthModule,
     FileUploadModule,
+    EventsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -6,7 +6,7 @@ import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } f
 
 
 @Entity()
-export class File {
+export class UploadFile {
   @PrimaryGeneratedColumn('uuid')
   id! : string;
 
