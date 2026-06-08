@@ -1,13 +1,17 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
+import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 
 
 // root file -> entry port  of ur nest js application
 
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const logger  = new Logger('Bootstrap')
+  const app = await NestFactory.create(AppModule, {
+    logger: ['error', 'warn','debug','log','verbose']
+  });
 
   // validating incoming requests bodies automatically
   app.useGlobalPipes(
@@ -21,6 +25,8 @@ async function bootstrap() {
   )
 
   // global settings
+
+  app.useGlobalInterceptors(new LoggingInterceptor());
   // env
 
   // start a http server
