@@ -12,9 +12,6 @@ export interface UserRegisteredEvent{
    timestamp: Date
 }
 
-
-
-
 @Injectable()
 export class  UserEventsService{
   constructor (
@@ -33,10 +30,8 @@ export class  UserEventsService{
 
        timestamp : new Date ()
     }
-
-
     //event name 
     // event data
-    this.eventEmitter.emit('user-registered, userRegisteredEventData')
+    this.eventEmitter.emit('user.registered', UserRegisteredEventData);
   }
 }
