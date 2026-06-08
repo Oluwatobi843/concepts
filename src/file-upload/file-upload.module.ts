@@ -12,7 +12,7 @@ import { memoryStorage } from 'multer';
     TypeOrmModule.forFeature([File]),
     CloudinaryModule,
     MulterModule.register({
-      storage: memoryStorage
+      storage: memoryStorage(),
     })
   ],
   controllers: [FileUploadController],
